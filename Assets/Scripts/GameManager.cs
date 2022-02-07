@@ -4,17 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using DemoCommon;
 
+/// <summary>
+/// A game manager class.
+/// </summary>
 public class GameManager : DemoBase
 {
     [Header("Game Scene")]
-    public GameObject sceneBase = null;
-    public GameObject background = null;
-    public GameObject frame = null;
+    public GameObject sceneBase = null;         // A root gameobject containing all gameplay objects.
+    public GameObject background = null;        // A background object.
+    public GameObject frame = null;             // A frame. 
 
-    public TextMesh scoreText = null;
+    public TextMesh scoreText = null;           // A score object.
 
     [Header("Enemy Properties")]
-    public GameObject[] enemyPrefabs = null;
+    public GameObject[] enemyPrefabs = null;    // An enemy prefabs.
 
     [Header("Layouts Properties")]
     [SerializeField]
@@ -28,6 +31,7 @@ public class GameManager : DemoBase
     {
         m_StartFlag = false;
 
+        /* Sets some global variables. */
         m_GameScene = sceneBase;
 
         m_GameLayouts = gameLayouts;
@@ -36,6 +40,7 @@ public class GameManager : DemoBase
 
         m_ScoreText = scoreText;
 
+        /* Starts spawning enemies. */
         StartCoroutine(SpawnEnemy());
     }
 
@@ -43,12 +48,17 @@ public class GameManager : DemoBase
     {
         if (Screen.width == widthBackup && Screen.height == heightBackup) return;
 
+        /*If screen size or aspect ratio has changed, relocates screen items. */
         widthBackup = Screen.width;
         heightBackup = Screen.height;
 
         AdjustGameSceneLayout();
     }
 
+    /// <summary>
+    /// Spawns enemies. 
+    /// </summary>
+    /// <returns></returns>
     IEnumerator SpawnEnemy()
     {
         while(true)
@@ -66,6 +76,9 @@ public class GameManager : DemoBase
         }
     }
 
+    /// <summary>
+    /// Adjusts the screen layout.
+    /// </summary>
     private void AdjustGameSceneLayout()
     {
         int width = Screen.width;

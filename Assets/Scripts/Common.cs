@@ -5,27 +5,45 @@ using UnityEngine;
 
 namespace DemoCommon
 {
+    /// <summary>
+    /// A base class for several animation.
+    /// </summary>
     public abstract class UiAnimation
     {
+        /* When this animation has been completed, true. */
         public bool isComplete = false;
 
+        /* When it is true, needs to wait for this animation to be completed. */
         public bool m_HasToWait = true;
+
+        /* When it's true, m_Object will be destroyed. */
         public bool m_hasToDestroy = false;
 
+        /* The main object that has to animate. */
         protected GameObject m_Object;
 
+        /* If it is true, then the object has to be shown before aniamtion. Otherwise, needs to be hidden. */
         private bool m_PreShow = false;
 
+        /* If it is true, then the object has to be shown after aniamtion. */
         private bool m_PostShow = false;
 
+        /* A delay before an animation. */
         private float m_PreDelay = 0.0f;
+
+        /* A delay after an animation. */
         private float m_PostDelay = 0.0f;
 
+        /* A target object that receives a massage after this animation has been completed. */
         private GameObject m_target = null;
 
+        /* A target function that receives a massage after this animation has been completed. */
         private string m_FunctionName = null;
 
+        /* A parameter that will pass in the target function. */
         private UnityEngine.Object m_Param = null;
+
+        /* A contructor. */
         public UiAnimation(GameObject obj, float preDelay = 0.0f, float postDelay = 0.0f,
             bool preShow = true, bool postShow = true, GameObject target = null, 
             string funcName = null, UnityEngine.Object param = null, bool hasToWait = true, bool hasToDestroy = false)
@@ -42,16 +60,26 @@ namespace DemoCommon
             m_Param = param;
         }
 
+        /* An abstract function for customized animations of the derived class instances. */
         protected abstract void PlayAnimation(int frameIndex);
 
+        /* An abstract function for customized final transforms of the derived class instances. */
         protected abstract void SetFinalTransform();
 
+        /// <summary>
+        /// A processing of animation.
+        /// </summary>
+        /// <param name="animDelay"></param>
+        /// <returns></returns>
         public IEnumerator Process(float animDelay)
         {
+            /* Waits for preDelay. */
             yield return new WaitForSeconds(m_PreDelay);
 
+            /* Pre process. */
             PreProcess();
 
+            /* Real animation. */
             for (int i = 0; i < 100; i += 5)
             {
                 PlayAnimation(i);
@@ -62,9 +90,13 @@ namespace DemoCommon
 
             yield return new WaitForSeconds(m_PostDelay);
 
+            /* Post process. */
             PostProces();
         }
 
+        /// <summary>
+        /// A process that has to be done before the animation.
+        /// </summary>
         private void PreProcess()
         {
             if (m_PreShow)
@@ -73,6 +105,9 @@ namespace DemoCommon
                 m_Object.SetActive(false);
         }
 
+        /// <summary>
+        /// A process after the animtion.
+        /// </summary>
         private void PostProces()
         {
             if (m_PostShow)
@@ -80,17 +115,22 @@ namespace DemoCommon
             else
                 m_Object.SetActive(false);
 
+            /* Sends a message with a parameter. */
             if (m_target != null && m_FunctionName != null)
             {
                 m_target.SendMessage(m_FunctionName, m_Param);
             }
 
+            /* If needed, destroy. */
             if (m_hasToDestroy == true) UnityEngine.GameObject.Destroy(m_Object);
 
             isComplete = true;
         }
     }
 
+    /// <summary>
+    /// A class for a zoom-in or zoon-out animation.
+    /// </summary>
     public class ZoomAnimation : UiAnimation
     {
         private float m_Min = 0.0f;
@@ -121,6 +161,9 @@ namespace DemoCommon
         }
     }
 
+    /// <summary>
+    /// A class for a twinkling animation.
+    /// </summary>
     public class TwinkleAnimation : UiAnimation
     {
         private float m_Min = 0.0f;
@@ -154,6 +197,9 @@ namespace DemoCommon
         }
     }
 
+    /// <summary>
+    /// A class for the layouts of the game play.
+    /// </summary>
     [Serializable]
     public class GameLayout
     {

@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A class for player, derived from DemoBase.
+/// </summary>
 public class PlayerController : DemoBase
 {
-    public GameObject bulletPrefab = null;
+    public GameObject bulletPrefab = null;      // A bullet prefab.
 
-    private bool isTriggered = false;
+    private bool isTriggered = false;           // true, when the trigger has been pulled.
 
-    protected static float bulletSpeedCulldown = 0.0f;
-    protected static float canonCullDown = 0.0f;
+    protected static float bulletSpeedCulldown = 0.0f;      // A remained time of the spped-boost bonus effect.
+    protected static float canonCullDown = 0.0f;            // A remained time of the canon-boost bonus effect.
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +20,7 @@ public class PlayerController : DemoBase
         transform.localPosition = new Vector3(0, -4.5f * m_ScaleFactor, ENEMY_DEPTH);
         transform.localScale = new Vector3(m_ScaleFactor, m_ScaleFactor, m_ScaleFactor);
 
-        StartCoroutine(SpawnBullet());
+        StartCoroutine(SpawnBullet());          // Starts spawing the bullets.
         StartCoroutine(BulletCullDown());
         StartCoroutine(CanonCullDown());
     }
@@ -26,21 +29,25 @@ public class PlayerController : DemoBase
     void Update()
     {
         if (m_PauseFlag == true) return;
+        if (m_StartFlag == false) return;
+
+        /* Updates the position and scale of the player. */
+        float xInput = Input.GetAxis("Horizontal");
+        float yInput = Input.GetAxis("Vertical");
 
         float x = transform.localPosition.x;
         float y = -4.5f * m_ScaleFactor;
         float z = transform.localPosition.z;
-        float xDelta = Input.GetAxis("Horizontal");
 
         transform.localScale = new Vector3(m_ScaleFactor, m_ScaleFactor, m_ScaleFactor);
 
-        x = transform.localPosition.x + xDelta * m_SelectedLayout.playerSpeed * m_ScaleFactor * Time.deltaTime;
+        x = transform.localPosition.x + xInput * m_SelectedLayout.playerSpeed * m_ScaleFactor * Time.deltaTime;
 
         x = Mathf.Clamp(x, -4.5f * m_ScaleFactor, 4.5f * m_ScaleFactor);
 
         transform.localPosition = new Vector3(x, y, z);
 
-        if (Input.GetAxis("Vertical") != 0) isTriggered = true; else isTriggered = false;
+        if (yInput != 0) isTriggered = true; else isTriggered = false;
     }
 
     private void OnTriggerEnter(Collider other)
