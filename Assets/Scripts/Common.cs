@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,9 @@ namespace DemoCommon
         public bool isComplete = false;
 
         public bool m_HasToWait = true;
+        public bool m_hasToDestroy = false;
 
-        protected GameObject m_uiObject;
+        protected GameObject m_Object;
 
         private bool m_PreShow = false;
 
@@ -23,16 +25,18 @@ namespace DemoCommon
 
         private string m_FunctionName = null;
 
-        private Object m_Param = null;
+        private UnityEngine.Object m_Param = null;
         public UiAnimation(GameObject obj, float preDelay = 0.0f, float postDelay = 0.0f,
-            bool preShow = true, bool postShow = true, GameObject target = null, string funcName = null, Object param = null, bool hasToWait = true)
+            bool preShow = true, bool postShow = true, GameObject target = null, 
+            string funcName = null, UnityEngine.Object param = null, bool hasToWait = true, bool hasToDestroy = false)
         {
-            m_uiObject = obj;
+            m_Object = obj;
             m_PreDelay = preDelay;
             m_PostDelay = postDelay;
             m_PreShow = preShow;
             m_PostShow = postShow;
             m_HasToWait = hasToWait;
+            m_hasToDestroy = hasToDestroy;
             m_target = target;
             m_FunctionName = funcName;
             m_Param = param;
@@ -64,22 +68,24 @@ namespace DemoCommon
         private void PreProcess()
         {
             if (m_PreShow)
-                m_uiObject.SetActive(true);
+                m_Object.SetActive(true);
             else
-                m_uiObject.SetActive(false);
+                m_Object.SetActive(false);
         }
 
         private void PostProces()
         {
             if (m_PostShow)
-                m_uiObject.SetActive(true);
+                m_Object.SetActive(true);
             else
-                m_uiObject.SetActive(false);
+                m_Object.SetActive(false);
 
             if (m_target != null && m_FunctionName != null)
             {
                 m_target.SendMessage(m_FunctionName, m_Param);
             }
+
+            if (m_hasToDestroy == true) UnityEngine.GameObject.Destroy(m_Object);
 
             isComplete = true;
         }
@@ -93,9 +99,9 @@ namespace DemoCommon
         private float m_frameStep = 0.0f;
 
         public ZoomAnimation(GameObject obj, float preDelay = 0.0f, float postDelay = 0.0f,
-            bool preShow = true, bool postShow = true, bool hasToWait = true, float min = 0.0f, float max = 1.0f,
-            GameObject target = null, string funcName = null)
-            : base(obj, preDelay, postDelay, preShow, postShow, target, funcName)
+            bool preShow = true, bool postShow = true, bool hasToWait = true, bool hasToDestroy = false, float min = 0.0f, float max = 1.0f,
+            GameObject target = null, string funcName = null, UnityEngine.Object param = null)
+            : base(obj, preDelay, postDelay, preShow, postShow, target, funcName, param, hasToWait, hasToDestroy)
         {
             m_Min = min;
             m_Max = max;
@@ -106,12 +112,12 @@ namespace DemoCommon
         protected override void PlayAnimation(int frameIndex)
         {
             float s = m_Min + (float)frameIndex * m_frameStep;
-            m_uiObject.transform.localScale = new Vector3(s, s, s);
+            m_Object.transform.localScale = new Vector3(s, s, s);
         }
 
         protected override void SetFinalTransform()
         {
-            m_uiObject.transform.localScale = new Vector3(m_Max, m_Max, m_Max);
+            m_Object.transform.localScale = new Vector3(m_Max, m_Max, m_Max);
         }
     }
 
@@ -124,9 +130,9 @@ namespace DemoCommon
 
         private float m_ScaleRange = 0.0f;
         public TwinkleAnimation(GameObject obj, float preDelay = 0.0f, float postDelay = 0.0f,
-            bool preShow = true, bool postShow = true, bool hasToWait = true, float min = 0.0f, float max = 1.0f, float rate = 3.6f,
-            GameObject target = null, string funcName = null, Object param = null)
-            : base(obj, preDelay, postDelay, preShow, postShow, target, funcName, param)
+            bool preShow = true, bool postShow = true, bool hasToWait = true, bool hasToDestroy = false, float min = 0.0f, float max = 1.0f, float rate = 3.6f,
+            GameObject target = null, string funcName = null, UnityEngine.Object param = null)
+            : base(obj, preDelay, postDelay, preShow, postShow, target, funcName, param, hasToWait, hasToDestroy)
         {
             m_Min = min;
             m_Max = max;
@@ -139,12 +145,27 @@ namespace DemoCommon
         protected override void PlayAnimation(int frameIndex)
         {
             float s = (m_Min + m_Max) * 0.5f + m_ScaleRange * Mathf.Cos((float)frameIndex * m_frameStep * Mathf.PI / 180.0f);
-            m_uiObject.transform.localScale = new Vector3(s, s, s);
+            m_Object.transform.localScale = new Vector3(s, s, s);
         }
 
         protected override void SetFinalTransform()
         {
-            m_uiObject.transform.localScale = Vector3.one;
+            m_Object.transform.localScale = Vector3.one;
         }
+    }
+
+    [Serializable]
+    public class GameLayout
+    {
+        public float playerSpeed = 7.0f;
+
+        public float bulletSpeed = 15.0f;
+        public float bulletInterval = 0.1f;
+
+        public int enemyAmount = 200;
+        public float enemySpeed = 5.0f;
+        public float enemyInterval = 2.0f;
+
+        public Material layout = null;
     }
 }

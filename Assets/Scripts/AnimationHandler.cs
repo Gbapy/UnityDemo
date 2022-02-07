@@ -16,19 +16,19 @@ public class AnimationHandler : DemoBase
         {
             yield return new WaitForSeconds(ANIM_DELAY);
 
-            if (m_UiAnimations.Count == 0) continue;
+            if (m_Animations.Count == 0) continue;
 
-            StartCoroutine(m_UiAnimations[0].Process(ANIM_DELAY));
+            StartCoroutine(m_Animations[0].Process(ANIM_DELAY));
 
-            if(m_UiAnimations[0].m_HasToWait == true)
+            if(m_Animations[0].m_HasToWait == true)
             {
-                while (m_UiAnimations[0].isComplete == false)
+                while (m_Animations[0].isComplete == false)
                 {
                     yield return new WaitForSeconds(ANIM_DELAY);
                 }
             }
 
-            m_UiAnimations.RemoveAt(0);
+            m_Animations.RemoveAt(0);
         }
     }
 }
