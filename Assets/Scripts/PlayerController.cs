@@ -76,7 +76,7 @@ public class PlayerController : DemoBase
 
         transform.localPosition = new Vector3(x, y, z);
 
-        if (yInput != 0) isTriggered = true; else isTriggered = false;
+        if (yInput > 0) isTriggered = true; else isTriggered = false;
     }
 
     /// <summary>
