@@ -6,8 +6,8 @@ TagManager:
   tags:
   - Enemy
   - Bullet
-  - SpeedBoost
   - CanonBoost
+  - BulletBoost
   layers:
   - Default
   - TransparentFX

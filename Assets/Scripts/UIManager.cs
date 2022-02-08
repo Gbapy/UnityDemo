@@ -34,7 +34,7 @@ public class UIManager : DemoBase
     public GameObject titleButton = null;
 
     /* A curtain object that hide gameplay objects from UI. */
-    public GameObject curtain = null;
+    public GameObject UiCurtain = null;
 
     /* A selected level, used when retrying. */
     private int selectedLevel = 0;
@@ -47,15 +47,18 @@ public class UIManager : DemoBase
         creditWindow.SetActive(false);
         endWindow.SetActive(false);
 
-        /* Sets some UI as global data. */
+        /* Sets some UI as global variables. */
         m_UiBase = gameObject;
-        m_Curtain = curtain;
+        m_UiCurtain = UiCurtain;
 
         /* Shows the splash window thoough animation. */
         StartCoroutine(AnimationProcessor());
         StartCoroutine(ShowSplash(delayOfSplash));
     }
 
+    /// <summary>
+    /// An event handler of the button '1' on the selector window.
+    /// </summary>
     public void OnOptionButton1Clicked()
     {
         ButtonClickAnimation(optionButton1, gameObject, "HideCurrentWindow");
@@ -63,6 +66,9 @@ public class UIManager : DemoBase
         InitGameScene(selectedLevel);
     }
 
+    /// <summary>
+    /// An event handler of the button '2' on the selector window.
+    /// </summary>
     public void OnOptionButton2Clicked()
     {
         ButtonClickAnimation(optionButton2, gameObject, "HideCurrentWindow");
@@ -70,22 +76,34 @@ public class UIManager : DemoBase
         InitGameScene(selectedLevel);
     }
 
+    /// <summary>
+    /// An event handler of the "Credit' button on the selector window.
+    /// </summary>
     public void OnCreditButtonClicked()
     {
         ButtonClickAnimation(creditButton, gameObject, "SwitchToWindow", creditWindow);
     }
 
+    /// <summary>
+    /// An event handler of the 'Back' button on the credit window.
+    /// </summary>
     public void OnBackButtonClicked()
     {
         ButtonClickAnimation(backButton, gameObject, "SwitchToWindow", selectorWindow);
     }
     
+    /// <summary>
+    /// An event handler of the 'Retry' button on the score window.
+    /// </summary>
     public void OnRetryButtonClicked()
     {
         ButtonClickAnimation(retryButton, gameObject, "HideCurrentWindow");
         InitGameScene(selectedLevel);
     }
 
+    /// <summary>
+    /// An event handle for the 'Title' button on the score window.
+    /// </summary>
     public void OnTitleButtonClicked()
     {
         ButtonClickAnimation(titleButton, gameObject, "SwitchToWindow", selectorWindow);
@@ -108,9 +126,6 @@ public class UIManager : DemoBase
     /* Shows a final window after gameplay has been completed, or failed. */
     private void ShowFinalWindow()
     {
-        /* Shows the curtain to hide gameplay objects. */
-        curtain.SetActive(true);
-
         finalScore.text = "Score: " + m_ScoreText.text;
 
         ShowWindow(endWindow);

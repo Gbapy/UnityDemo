@@ -26,6 +26,9 @@ public class GameManager : DemoBase
     private int widthBackup = 0;
     private int heightBackup = 0;
 
+    /* A total number of enemies spawned. */
+    private int enemySpawned = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,12 +70,22 @@ public class GameManager : DemoBase
 
             if (m_PauseFlag == true) continue;
             if (m_StartFlag == false) continue;
+            if (enemySpawned > m_SelectedLayout.enemyAmount) continue;
 
             int idx = Random.Range(-1, 3);
 
             idx = Mathf.Clamp(idx, 0, 2);
 
             GameObject obj = GameObject.Instantiate(enemyPrefabs[idx], m_GameScene.transform);
+
+            enemySpawned++;
+
+            if (enemySpawned >= m_SelectedLayout.enemyAmount)
+            {
+                enemySpawned = 0;
+                m_StartFlag = false;
+                m_UiBase.SendMessage("ShowFinalWindow");
+            }
         }
     }
 
@@ -106,8 +119,6 @@ public class GameManager : DemoBase
             float sF = margin * 0.8f / (float)height;
 
             scoreText.transform.parent.localPosition = new Vector3(posX * 10.0f / (float)height, 0.0f, SCORE_DEPTH);
-
-
             scoreText.transform.parent.localScale = new Vector3(sF, sF, sF);
         }
 

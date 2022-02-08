@@ -25,7 +25,7 @@ public class DemoBase : MonoBehaviour
     protected static GameObject m_UiBase = null;
 
     /* A curtain object that hides gameplay objects from UI. */
-    protected static GameObject m_Curtain = null;
+    protected static GameObject m_UiCurtain = null;
 
     /* A flag for pause state. */
     protected static bool m_PauseFlag = false;
@@ -53,6 +53,12 @@ public class DemoBase : MonoBehaviour
 
     /* A scale factor for the several screen sizes anf aspect ratios. */
     protected static float m_ScaleFactor = 1.0f;
+
+    /* When it is not bigger than a zero, the bullet damage is 1, Othersize, it is 3. */
+    protected static float m_BulletCullDown = 0.0f;
+
+    /* When it is not bigger than a zero, the canon fires one ray of bullet. Otherwise, three rays of bullets. */
+    protected static float m_CanonCullDown = 0.0f;
 
     /* A current UI window. */
     private static GameObject m_CurrentUI = null;
@@ -91,6 +97,9 @@ public class DemoBase : MonoBehaviour
         HideWindow(m_CurrentUI);
 
         m_CurrentUI = null;
+
+        /* Hides the curtain to show gameplay objects. */
+        m_UiCurtain.SetActive(false);
     }
 
     /// <summary>
@@ -102,6 +111,9 @@ public class DemoBase : MonoBehaviour
         if (uiObj != null) m_Animations.Add(new ZoomAnimation(uiObj, 0, 0, true, true, true, false, 0.0f, 1.0f));
 
         m_CurrentUI = uiObj;
+
+        /* Shows the curtain to hide gameplay objects. */
+        m_UiCurtain.SetActive(true);
     }
 
     /// <summary>
@@ -119,14 +131,14 @@ public class DemoBase : MonoBehaviour
     /// <param name="layout"> An index of game layout. </param>
     protected void InitGameScene(int layout)
     {
-        /* Hides the curtain to show gameplay objects. */
-        m_Curtain.SetActive(false);
-
         m_SelectedLayout = m_GameLayouts[layout];
 
         m_Background.GetComponent<MeshRenderer>().material = m_SelectedLayout.layout;
 
         AddScore(-1);
+
+        m_BulletCullDown = 0.0f;
+        m_CanonCullDown = 0.0f;
 
         m_StartFlag = true;
         m_PauseFlag = false;

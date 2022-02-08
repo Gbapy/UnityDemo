@@ -5,6 +5,13 @@ using UnityEngine;
 
 namespace DemoCommon
 {
+    public enum BonusEnum
+    {
+        None = 0,
+        BulletBoost = 1,
+        CanonBoost = 2
+    }
+
     /// <summary>
     /// A base class for several animation.
     /// </summary>
@@ -187,7 +194,7 @@ namespace DemoCommon
         
         protected override void PlayAnimation(int frameIndex)
         {
-            float s = (m_Min + m_Max) * 0.5f + m_ScaleRange * Mathf.Cos((float)frameIndex * m_frameStep * Mathf.PI / 180.0f);
+            float s = (m_Min + m_Max) * 0.5f + m_ScaleRange * Mathf.Sin((float)frameIndex * m_frameStep * Mathf.PI / 180.0f);
             m_Object.transform.localScale = new Vector3(s, s, s);
         }
 

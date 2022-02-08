@@ -110,6 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 2
+  bonusPrefab:
+  - {fileID: 4625114560942565611, guid: cff7c6b9ac496e04ba0e10008aca32f2, type: 3}
+  - {fileID: 7654618417555026747, guid: 0e6d8e6c3d8747c4285dae7c7a0a4d58, type: 3}
 --- !u!54 &-3489482962530226529
 Rigidbody:
   m_ObjectHideFlags: 0
